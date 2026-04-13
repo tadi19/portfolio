@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tadiwa Chihora — Portfolio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #0e0e0e; color: #f0ede8; }
+
+  /* NAVBAR INTERACTIONS */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    background: rgba(14,14,14,0.96);
+    border-bottom: 0.5px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+  nav.scrolled { padding: 12px 48px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+  
+  .nav-name { 
+    font-size: 14px; font-weight: 600; letter-spacing: 0.8px; color: #fff; 
+    cursor: pointer; transition: color 0.3s; 
+  }
+  .nav-name:hover { color: #6b9e8a; }
+  
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a { 
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
+    color: rgba(255,255,255,0.45); text-decoration: none; 
+    transition: all 0.3s; position: relative; 
+  }
+  .nav-links a::after { 
+    content: ''; position: absolute; bottom: -4px; left: 0; 
+    width: 0; height: 2px; background: #6b9e8a; transition: width 0.3s; 
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* HERO WITH ANIMATIONS */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: flex-end;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2a3830 0%, #1a2420 100%);
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(14,14,14,0.92) 0%, rgba(14,14,14,0.4) 60%, rgba(14,14,14,0.15) 100%);
+  }
+  .hero-content { 
+    position: relative; z-index: 2; padding: 0 48px 80px; width: 100%; 
+    max-width: 900px; animation: fadeInUp 0.8s ease 0.2s both; 
+  }
+  .hero-eyebrow { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 16px; }
+  .hero-name { font-size: clamp(52px, 7vw, 88px); font-weight: 700; color: #fff; line-height: 0.95; letter-spacing: -2px; font-family: Georgia, serif; }
+  .hero-sub { font-size: 16px; color: rgba(255,255,255,0.5); margin-top: 20px; line-height: 1.65; max-width: 500px; }
+  
+  .hero-cta { display: flex; gap: 12px; margin-top: 36px; flex-wrap: wrap; }
+  .btn-primary { 
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
+    color: #0e0e0e; background: #f0ede8; padding: 13px 28px; 
+    border-radius: 3px; text-decoration: none; font-weight: 700; 
+    transition: all 0.3s; border: 2px solid #f0ede8; cursor: pointer; 
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(240,237,232,0.2); }
+  
+  .btn-ghost { 
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
+    color: rgba(255,255,255,0.55); border: 0.5px solid rgba(255,255,255,0.22); 
+    padding: 13px 28px; border-radius: 3px; text-decoration: none; 
+    transition: all 0.3s; cursor: pointer; 
+  }
+  .btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.5); transform: translateY(-2px); }
+  
+  .scroll-cue { 
+    position: absolute; bottom: 28px; right: 48px; z-index: 2; 
+    font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; 
+    color: rgba(255,255,255,0.22); animation: bounce 2s infinite; 
+  }
+  
+  @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* SECTIONS */
+  section { padding: 88px 48px; transition: all 0.3s ease; }
+  .sec-eyebrow { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #6b9e8a; margin-bottom: 10px; }
+  .sec-heading { font-size: clamp(24px, 3vw, 34px); font-weight: 700; color: #f0ede8; font-family: Georgia, serif; margin-bottom: 48px; line-height: 1.2; }
+
+  /* ABOUT */
+  #about { background: #0e0e0e; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+  .about-body { font-size: 15px; color: rgba(240,237,232,0.6); line-height: 1.9; }
+  .about-body p { margin-bottom: 16px; transition: color 0.3s; }
+  .about-body p:hover { color: rgba(240,237,232,0.8); }
+  .about-meta { font-size: 12px; color: rgba(240,237,232,0.28); letter-spacing: 0.5px; margin-top: 4px; }
+  
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat { 
+    padding: 22px; border: 0.5px solid rgba(255,255,255,0.09); 
+    border-radius: 6px; transition: all 0.3s; cursor: pointer; 
+  }
+  .stat:hover { border-color: #6b9e8a; background: rgba(107,158,138,0.05); transform: translateY(-4px); }
+  .stat-num { font-size: 30px; font-weight: 700; color: #6b9e8a; font-family: Georgia, serif; line-height: 1; }
+  .stat-label { font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: rgba(240,237,232,0.35); margin-top: 6px; line-height: 1.4; }
+
+  /* EXPERIENCE */
+  #experience { background: #131817; }
+  .exp-list { display: flex; flex-direction: column; }
+  .exp-item { 
+    display: grid; grid-template-columns: 180px 1fr; gap: 0 48px; 
+    padding: 36px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06); 
+    transition: all 0.3s; 
+  }
+  .exp-item:hover { padding-left: 12px; border-left: 2px solid #6b9e8a; }
+  .exp-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .exp-date { font-size: 11px; letter-spacing: 0.8px; color: rgba(240,237,232,0.28); text-transform: uppercase; padding-top: 4px; }
+  .exp-org { font-size: 11.5px; color: #6b9e8a; margin-top: 6px; letter-spacing: 0.5px; }
+  .exp-title { font-size: 17px; font-weight: 600; color: #f0ede8; margin-bottom: 10px; line-height: 1.3; }
+  ul.exp-bullets { list-style: none; padding: 0; }
+  ul.exp-bullets li { 
+    font-size: 13.5px; color: rgba(240,237,232,0.5); line-height: 1.75; 
+    padding-left: 16px; position: relative; margin-bottom: 4px; transition: color 0.3s; 
+  }
+  ul.exp-bullets li:hover { color: rgba(240,237,232,0.8); }
+  ul.exp-bullets li::before { content: "–"; position: absolute; left: 0; color: #6b9e8a; }
+
+  /* PROJECTS */
+  #projects { background: #0e0e0e; }
+  .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1px; background: rgba(255,255,255,0.07); border-radius: 6px; overflow: hidden; }
+  .proj-card { 
+    background: #0e0e0e; padding: 36px; position: relative; 
+    transition: all 0.3s; cursor: pointer; 
+  }
+  .proj-card:hover { background: #161a18; transform: translateY(-8px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+  .proj-tag { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: #6b9e8a; margin-bottom: 12px; }
+  .proj-year { position: absolute; top: 36px; right: 36px; font-size: 11px; color: rgba(240,237,232,0.18); }
+  .proj-title { font-size: 18px; font-weight: 700; color: #f0ede8; margin-bottom: 12px; font-family: Georgia, serif; line-height: 1.3; padding-right: 40px; }
+  .proj-body { font-size: 13.5px; color: rgba(240,237,232,0.48); line-height: 1.75; }
+
+  /* SKILLS */
+  #skills { background: #131817; }
+  .skills-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+  .skill-group-title { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(240,237,232,0.28); margin-bottom: 16px; }
+  .skill-items { display: flex; flex-direction: column; gap: 8px; }
+  .skill-item { 
+    font-size: 14px; color: rgba(240,237,232,0.65); padding: 10px 16px; 
+    border: 0.5px solid rgba(255,255,255,0.08); border-radius: 4px; 
+    transition: all 0.3s; cursor: pointer; 
+  }
+  .skill-item:hover { background: rgba(107,158,138,0.1); border-color: #6b9e8a; color: #f0ede8; transform: translateX(4px); }
+
+  /* AWARDS */
+  #awards { background: #0e0e0e; }
+  .awards-list { display: flex; flex-direction: column; }
+  .award-row { 
+    display: flex; justify-content: space-between; align-items: baseline; 
+    padding: 20px 0; border-bottom: 0.5px solid rgba(255,255,255,0.06); 
+    transition: all 0.3s; 
+  }
+  .award-row:hover { padding-left: 12px; border-left: 2px solid #6b9e8a; }
+  .award-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .award-name { font-size: 15px; color: #f0ede8; }
+  .award-yr { font-size: 12px; color: #6b9e8a; letter-spacing: 1px; margin-left: 20px; white-space: nowrap; }
+
+  /* CONTACT */
+  #contact { background: #131817; text-align: center; }
+  #contact .sec-heading { margin-bottom: 8px; }
+  .contact-intro { font-size: 15px; color: rgba(240,237,232,0.45); margin-bottom: 32px; }
+  .contact-email { 
+    font-size: 20px; font-family: Georgia, serif; color: #6b9e8a; 
+    text-decoration: none; border-bottom: 0.5px solid #6b9e8a; 
+    padding-bottom: 2px; transition: all 0.3s; 
+  }
+  .contact-email:hover { color: #8ec4b0; border-color: #8ec4b0; transform: scale(1.05); }
+  .contact-links { display: flex; justify-content: center; gap: 32px; margin-top: 28px; flex-wrap: wrap; }
+  .contact-links a { 
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase; 
+    color: rgba(240,237,232,0.35); text-decoration: none; 
+    transition: all 0.3s; cursor: pointer; 
+  }
+  .contact-links a:hover { color: #f0ede8; text-decoration: underline; }
+
+  /* FOOTER */
+  footer { 
+    padding: 24px 48px; border-top: 0.5px solid rgba(255,255,255,0.07); 
+    display: flex; justify-content: space-between; align-items: center; 
+    flex-wrap: wrap; gap: 8px; 
+  }
+  footer span { font-size: 11px; color: rgba(240,237,232,0.2); letter-spacing: 0.5px; }
+
+  /* MODAL */
+  .modal { 
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
+    width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); 
+    animation: fadeIn 0.3s; 
+  }
+  .modal-content { 
+    background-color: #1a1e1c; margin: 5% auto; padding: 40px; 
+    border-radius: 8px; width: 90%; max-width: 600px; 
+    border: 1px solid rgba(107,158,138,0.3); 
+  }
+  .close-modal { 
+    color: #aaa; float: right; font-size: 28px; font-weight: bold; 
+    cursor: pointer; transition: color 0.3s; 
+  }
+  .close-modal:hover { color: #fff; }
+  
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 18px 24px; }
+    .nav-links { gap: 16px; }
+    section { padding: 64px 24px; }
+    .hero-content { padding: 0 24px 64px; }
+    .about-grid, .skills-cols { grid-template-columns: 1fr; gap: 32px; }
+    .exp-item { grid-template-columns: 1fr; gap: 6px 0; }
+    .stats { grid-template-columns: 1fr 1fr; }
+    footer { padding: 20px 24px; flex-direction: column; text-align: center; }
+    .scroll-cue { display: none; }
+  }
+  @media (max-width: 480px) {
+    .hero-name { letter-spacing: -1px; }
+    .stats { grid-template-columns: 1fr; }
+    .project-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <span class="nav-name" onclick="scrollToTop()">Tadiwa Chihora</span>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Business &nbsp;&middot;&nbsp; Leadership &nbsp;&middot;&nbsp; Research</div>
+    <h1 class="hero-name">Tadiwa<br>Chihora</h1>
+    <p class="hero-sub">BSc Business Administration student at Ashesi University. Scholar, leader, and aspiring business strategist.</p>
+    <div class="hero-cta">
+      <a href="#experience" class="btn-primary">View experience</a>
+      <a href="#contact" class="btn-ghost">Get in touch</a>
+    </div>
+  </div>
+  <div class="scroll-cue">scroll ↓</div>
+</div>
+
+<section id="about">
+  <div class="sec-eyebrow">About me</div>
+  <h2 class="sec-heading">Building a career at the<br>intersection of business &amp; impact</h2>
+  <div class="about-grid">
+    <div class="about-body">
+      <p>I'm a Business Administration student at Ashesi University, Ghana, expected to graduate in 2028. I'm passionate about using business skills to solve real problems — from marketing strategy to financial management to community-driven research.</p>
+      <p>I hold the Mastercard Foundation Scholarship and the United Scholars Achievers Program Scholarship, and I'm currently gaining hands-on experience at Simbisa Brands in Zimbabwe.</p>
+      <p>My coursework spans Statistics, Financial Accounting, Microeconomics, Organizational Behavior, and Leadership, giving me a well-rounded foundation for strategic business thinking.</p>
+      <p class="about-meta">Berekuso, Accra — Ghana &nbsp;&middot;&nbsp; tadiwa.chihora@ashesi.edu.gh</p>
+    </div>
+    <div class="stats">
+      <div class="stat" onclick="showStatModal('Leadership Training', '100+ hours of comprehensive leadership, ethics, and social innovation training completed through the Aspire program.')">
+        <div class="stat-num">100+</div>
+        <div class="stat-label">Leadership training hours</div>
+      </div>
+      <div class="stat" onclick="showStatModal('Simbisa Support', 'Successfully supported sales and marketing initiatives across 107 outlets and 12 brands.')">
+        <div class="stat-num">107</div>
+        <div class="stat-label">Outlets supported at Simbisa</div>
+      </div>
+      <div class="stat" onclick="showStatModal('Student Leadership', 'Prepared budgets and financial statements for a 150+ member Mastercard Scholars club.')">
+        <div class="stat-num">150+</div>
+        <div class="stat-label">Students led as Financial Secretary</div>
+      </div>
+      <div class="stat" onclick="showStatModal('Scholarships Awarded', 'Mastercard Foundation, United Scholars Achievers Program, and Capstone Grant recipient.')">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Scholarships &amp; grants awarded</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="sec-eyebrow">Experience</div>
+  <h2 class="sec-heading">Where I&rsquo;ve worked &amp; led</h2>
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Mar 2026 – Present</div>
+        <div class="exp-org">Simbisa Brands · Zimbabwe</div>
+      </div>
+      <div>
+        <div class="exp-title">Marketing and Sales Intern</div>
+        <ul class="exp-bullets">
+          <li>Supported sales and marketing initiatives across 107 outlets and 12 brands</li>
+          <li>Contributed to the successful opening of a new store, including promotional planning and customer engagement strategies</li>
+          <li>Monitored trackers for promotions, specials, and daily sales performance to identify trends and opportunities</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Oct 2025 – Present</div>
+        <div class="exp-org">Mastercard Scholars · Ashesi</div>
+      </div>
+      <div>
+        <div class="exp-title">Financial Secretary</div>
+        <ul class="exp-bullets">
+          <li>Prepared budgets and financial statements for a 150+ member club</li>
+          <li>Raised and managed over GHC 1,200 in club funds</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Oct 2025 – Present</div>
+        <div class="exp-org">Commworm Club · Ashesi</div>
+      </div>
+      <div>
+        <div class="exp-title">Coordinator</div>
+        <ul class="exp-bullets">
+          <li>Organised a two-day speaking seminar with 15+ participants each day</li>
+          <li>Led fundraising initiatives raising 500 GHS, allocating resources to support 15 freshmen</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Sep – Dec 2025</div>
+        <div class="exp-org">Aspire · Harvard Faculty</div>
+      </div>
+      <div>
+        <div class="exp-title">Leadership Program Participant</div>
+        <ul class="exp-bullets">
+          <li>Completed 100+ hours of leadership, ethics, and social innovation training</li>
+          <li>Participated in 6 intensive modules: emotional intelligence, cultural intelligence, ethical leadership, and systems thinking</li>
+        </ul>
+      </div>
+    </div>
+    <div class="exp-item">
+      <div class="exp-meta">
+        <div class="exp-date">Sep – Dec 2024</div>
+        <div class="exp-org">USAP Community School · Zimbabwe</div>
+      </div>
+      <div>
+        <div class="exp-title">Humanities Teaching Assistant</div>
+        <ul class="exp-bullets">
+          <li>Provided personalized one-on-one tutorials to 7+ students weekly</li>
+          <li>Designed and executed high-impact instructional materials including visual aids and worksheets</li>
+          <li>Enhanced the Humanities curriculum by integrating innovative instructional ideas and feedback</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="sec-eyebrow">Projects &amp; Research</div>
+  <h2 class="sec-heading">Work I&rsquo;m proud of</h2>
+  <div class="project-grid">
+    <div class="proj-card">
+      <div class="proj-year">2024</div>
+      <div class="proj-tag">Research · Capstone Grant</div>
+      <h3 class="proj-title">Causes and Consequences of Period Poverty in Gweru</h3>
+      <p class="proj-body">A grant-funded research project examining the social and economic dimensions of period poverty in Gweru, Zimbabwe — exploring access barriers, health consequences, and pathways to systemic solutions.</p>
+    </div>
+    <div class="proj-card">
+      <div class="proj-year">2025</div>
+      <div class="proj-tag">Event · Public Speaking</div>
+      <h3 class="proj-title">Commworm Two-Day Speaking Seminar</h3>
+      <p class="proj-body">Planned and coordinated a two-day speaking seminar drawing 15+ attendees per day. Managed logistics, fundraising (500 GHS raised), and resource allocation to support participating freshmen.</p>
+    </div>
+    <div class="proj-card">
+      <div class="proj-year">2025</div>
+      <div class="proj-tag">Finance · Leadership</div>
+      <h3 class="proj-title">Club Financial Management — Mastercard Scholars</h3>
+      <p class="proj-body">Managed the full financial lifecycle of a 150+ member club: budgeting, reporting, and raising over GHC 1,200, building hands-on experience in financial stewardship and organizational management.</p>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="sec-eyebrow">Skills</div>
+  <h2 class="sec-heading">What I bring to the table</h2>
+  <div class="skills-cols">
+    <div>
+      <div class="skill-group-title">Software</div>
+      <div class="skill-items">
+        <div class="skill-item">Microsoft Word</div>
+        <div class="skill-item">Microsoft Excel</div>
+        <div class="skill-item">Microsoft PowerPoint</div>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-title">Programming</div>
+      <div class="skill-items">
+        <div class="skill-item">Python</div>
+        <div class="skill-item">R</div>
+      </div>
+    </div>
+    <div>
+      <div class="skill-group-title">Languages</div>
+      <div class="skill-items">
+        <div class="skill-item">English — fluent</div>
+        <div class="skill-item">Shona — fluent</div>
+        <div class="skill-item">French — beginner</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="awards">
+  <div class="sec-eyebrow">Recognition</div>
+  <h2 class="sec-heading">Awards &amp; scholarships</h2>
+  <div class="awards-list">
+    <div class="award-row">
+      <span class="award-name">Mastercard Foundation Scholarship</span>
+      <span class="award-yr">2025</span>
+    </div>
+    <div class="award-row">
+      <span class="award-name">Capstone Grant — Period Poverty Research</span>
+      <span class="award-yr">2024</span>
+    </div>
+    <div class="award-row">
+      <span class="award-name">United Scholars Achievers Program Scholarship</span>
+      <span class="award-yr">2022</span>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="sec-eyebrow">Get in touch</div>
+  <h2 class="sec-heading">Let&rsquo;s connect</h2>
+  <p class="contact-intro">Open to opportunities, collaborations, and conversations.</p>
+  <a href="mailto:tadiwa.chihora@ashesi.edu.gh" class="contact-email">tadiwa.chihora@ashesi.edu.gh</a>
+  <div class="contact-links">
+    <a href="https://www.linkedin.com/in/tadiwachihora" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="https://www.instagram.com/tee_cee0004?igsh=YzljYTk1ODg3Zg==" target="_blank" rel="noopener">Instagram</a>
+    <a href="tel:+233598574014">+233 598 574 014</a>
+    <a>Berekuso, Accra — Ghana</a>
+  </div>
+</section>
+
+<footer>
+  <span>Tadiwa Chihora &nbsp;&middot;&nbsp; 2026</span>
+  <span>BSc Business Administration &nbsp;&middot;&nbsp; Ashesi University</span>
+</footer>
+
+<div id="statModal" class="modal">
+  <div class="modal-content">
+    <span class="close-modal" onclick="closeStatModal()">&times;</span>
+    <h2 id="modalTitle" style="color: #6b9e8a; margin-bottom: 16px;"></h2>
+    <p id="modalBody" style="color: rgba(240,237,232,0.7); line-height: 1.8; font-size: 15px;"></p>
+  </div>
+</div>
+
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', function() {
+    const navbar = document.getElementById('navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // Smooth scroll to top
+  function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Modal functions
+  function showStatModal(title, body) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').textContent = body;
+    document.getElementById('statModal').style.display = 'block';
+  }
+
+  function closeStatModal() {
+    document.getElementById('statModal').style.display = 'none';
+  }
+
+  // Close modal when clicking outside
+  window.onclick = function(event) {
+    const modal = document.getElementById('statModal');
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // Scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+  };
+
+  const observer = new IntersectionObserver(function(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('section').forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(20px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    observer.observe(section);
+  });
+</script>
+
+</body>
+</html>
